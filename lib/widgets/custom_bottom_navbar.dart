@@ -46,11 +46,11 @@ class CustomNavbar extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: isActive ? Colors.blue : Colors.grey),
+          Icon(icon, color: isActive ? Color.fromARGB(255, 230, 19, 19) : Colors.grey),
           Text(
             label,
             style: TextStyle(
-              color: isActive ? Colors.blue : Colors.grey,
+              color: isActive ? const Color.fromARGB(255, 230, 19, 19) : Colors.grey,
               fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
             ),
           ),
