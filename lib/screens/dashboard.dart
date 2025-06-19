@@ -1,6 +1,6 @@
 // dashboard.dart
 import 'package:flutter/material.dart';
-import 'package:easy_pdf/screens/pdf_list_widget.dart';
+import 'package:easy_pdf/screens/pdf_list.dart';
 import 'package:easy_pdf/widgets/custom_bottom_navbar.dart';
 import 'package:easy_pdf/screens/tools_menu_page.dart';
 import 'package:easy_pdf/widgets/custom_app_bar.dart';
