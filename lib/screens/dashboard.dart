@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_pdf/screens/pdf_list_widget.dart';
 import 'package:easy_pdf/widgets/custom_bottom_navbar.dart';
 import 'package:easy_pdf/screens/tools_menu_page.dart';
+import 'package:easy_pdf/widgets/custom_app_bar.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -17,7 +18,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Dashboard PDF")),
+      appBar: CustomAppBar(),
       backgroundColor: Colors.white,
       body: _pages[_currentIndex],
       bottomNavigationBar: CustomNavbar(
