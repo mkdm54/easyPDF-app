@@ -29,7 +29,7 @@ class CustomNavbar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _navItem(icon: Icons.home, label: "Dashboard", index: 0),
-          _navItem(icon: Icons.build_rounded, label: "Tools", index: 1),
+          _navItem(icon: Icons.camera_alt_outlined, label: "Scan", index: 1),
         ],
       ),
     );
