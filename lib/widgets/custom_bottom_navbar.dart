@@ -12,14 +12,15 @@ class CustomNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            color: colors.onSurface.withValues(alpha: 0.1),
+            blurRadius: 1,
+            offset: const Offset(0, -1),
           ),
         ],
       ),
@@ -46,11 +47,17 @@ class CustomNavbar extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: isActive ? Color.fromARGB(255, 230, 19, 19) : Colors.grey),
+          Icon(
+            icon,
+            color: isActive ? Color.fromARGB(255, 230, 19, 19) : Colors.grey,
+          ),
           Text(
             label,
             style: TextStyle(
-              color: isActive ? const Color.fromARGB(255, 230, 19, 19) : Colors.grey,
+              color:
+                  isActive
+                      ? const Color.fromARGB(255, 230, 19, 19)
+                      : Colors.grey,
               fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
             ),
           ),
