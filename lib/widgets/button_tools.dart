@@ -14,29 +14,40 @@ class ButtonTools extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min, // supaya ukurannya pas
-      children: [
-        Container(
-          width: 70,
-          height: 70,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withValues(alpha: 0.5),
-                spreadRadius: 1,
-                blurRadius: 2,
-                offset: Offset(2, 2),
-              ),
-            ],
+    return InkWell(
+      onTap: onpressed,
+      borderRadius: BorderRadius.circular(12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withValues(alpha: 0.5),
+                  spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: const Offset(2, 2),
+                ),
+              ],
+            ),
+            child: Center(child: icon),
           ),
-          child: Center(child: icon),
-        ),
-        const SizedBox(height: 8),
-        Text(label, style: const TextStyle(color: Colors.black)),
-      ],
+          const SizedBox(height: 8),
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.visible,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.black),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
