@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:easy_pdf/screens/dashboard.dart';
+import 'package:easy_pdf/screens/main_dashboard.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void _navigateToDashboard() {
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => const Dashboard(),
+        pageBuilder: (_, __, ___) => const MainDashboard(),
         transitionDuration: const Duration(milliseconds: 600),
         transitionsBuilder: (_, animation, __, child) {
           return FadeTransition(opacity: animation, child: child);

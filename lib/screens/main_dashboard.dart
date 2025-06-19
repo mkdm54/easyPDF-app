@@ -1,20 +1,20 @@
-// dashboard.dart
+// MainDashboard.dart
 import 'package:flutter/material.dart';
-import 'package:easy_pdf/screens/pdf_list.dart';
+import 'package:easy_pdf/screens/dashboard_content.dart';
 import 'package:easy_pdf/widgets/custom_bottom_navbar.dart';
-import 'package:easy_pdf/screens/tools_menu_page.dart';
 import 'package:easy_pdf/widgets/custom_app_bar.dart';
+import 'package:easy_pdf/screens/camera.dart';
 
-class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+class MainDashboard extends StatefulWidget {
+  const MainDashboard({super.key});
 
   @override
-  State<Dashboard> createState() => _DashboardState();
+  State<MainDashboard> createState() => _MainDashboardState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _MainDashboardState extends State<MainDashboard> {
   int _currentIndex = 0;
-  final List<Widget> _pages = const [PdfListWidget(), ToolsMenuPage()];
+  final List<Widget> _pages = const [DashboardContent(), Camera()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(

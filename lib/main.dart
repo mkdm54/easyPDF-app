@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // import 'package:easy_pdf/screens/splash_screen/splash_screen.dart';
-import 'package:easy_pdf/screens/dashboard.dart';
+import 'package:easy_pdf/screens/main_dashboard.dart';
 import 'package:easy_pdf/theme/app_theme.dart';
 import 'package:flutter/services.dart';
 
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      home: const Dashboard(),
+      home: const MainDashboard(),
     );
   }
 }
