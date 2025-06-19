@@ -7,7 +7,10 @@ class AppTheme {
 
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    colorScheme: ColorScheme.light(primary: _primaryColor, surface: _lightBgColor),
+    colorScheme: ColorScheme.light(
+      primary: _primaryColor,
+      surface: _lightBgColor,
+    ),
     textTheme: const TextTheme(
       bodyMedium: TextStyle(color: Colors.black, fontSize: 16),
     ),
@@ -15,7 +18,10 @@ class AppTheme {
 
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    colorScheme: ColorScheme.dark(primary: _primaryColor, surface: _darkBgColor),
+    colorScheme: ColorScheme.dark(
+      primary: _primaryColor,
+      surface: _darkBgColor,
+    ),
     textTheme: const TextTheme(
       bodyMedium: TextStyle(color: Colors.white, fontSize: 16),
     ),
