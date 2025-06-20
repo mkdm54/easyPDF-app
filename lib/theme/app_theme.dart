@@ -10,6 +10,8 @@ class AppTheme {
     colorScheme: ColorScheme.light(
       primary: _primaryColor,
       surface: _lightBgColor,
+      onSurface: _darkBgColor
+      
     ),
     textTheme: const TextTheme(
       bodyMedium: TextStyle(color: Colors.black, fontSize: 16),
