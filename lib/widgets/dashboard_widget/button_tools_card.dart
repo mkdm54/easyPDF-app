@@ -44,11 +44,12 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: const Color.fromARGB(255, 255, 0, 0),
+        color: colors.surface,
       ),
       child: Padding(
         padding: EdgeInsets.all(12),

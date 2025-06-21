@@ -14,6 +14,7 @@ class ButtonTools extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onpressed,
       borderRadius: BorderRadius.circular(12),
@@ -43,7 +44,7 @@ class ButtonTools extends StatelessWidget {
               label,
               overflow: TextOverflow.visible,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.black),
+              style: TextStyle(color: colors.onSurface),
             ),
           ),
         ],
