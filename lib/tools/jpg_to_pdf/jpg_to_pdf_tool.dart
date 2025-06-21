@@ -97,6 +97,26 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            SizedBox(
+              width: double.infinity,
+              height: 100,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.image, color: Colors.blue, size: 100,),
+                  const SizedBox(width: 8), // jarak antara icon dan teks
+                  Flexible(
+                    child: Text(
+                      'Konversi gambar JPG ke file PDF dengan mudah dan cepat.',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(),
+            const SizedBox(height: 20),
             GestureDetector(
               onTap: _pickImage,
               child: Container(
@@ -130,9 +150,33 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
                 ? Image.file(_selectedImage!, height: 200)
                 : const Text("Belum ada gambar dipilih"),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _convertToPdf,
-              child: const Text("Konversi ke PDF"),
+            GestureDetector(
+              onTap: _convertToPdf,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 24,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withValues(alpha: 0.5),
+                      blurRadius: 4,
+                      offset: const Offset(2, 2),
+                    ),
+                  ],
+                ),
+                child: const Text(
+                  "Koversi ke PDF",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
