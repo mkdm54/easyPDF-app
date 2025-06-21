@@ -1,10 +1,9 @@
-// MainDashboard.dart
 import 'package:flutter/material.dart';
 import 'package:easy_pdf/screens/dashboard_content.dart';
-import 'package:easy_pdf/widgets/custom_bottom_navbar.dart';
+import 'package:easy_pdf/screens/camera.dart';
 import 'package:easy_pdf/widgets/custom_app_bar.dart';
 import 'package:easy_pdf/widgets/custom_sidebar.dart';
-import 'package:easy_pdf/screens/camera.dart';
+import 'package:easy_pdf/widgets/custom_bottom_navbar.dart';
 
 class MainDashboard extends StatefulWidget {
   const MainDashboard({super.key});
@@ -29,49 +28,52 @@ class _MainDashboardState extends State<MainDashboard> {
     });
   }
 
-  // void onLogoutTap() {
-  //   // Handle logout tap
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: const Text('Logout'),
-  //         content: const Text('Are you sure you want to logout?'),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () => Navigator.of(context).pop(),
-  //             child: const Text('Cancel'),
-  //           ),
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //               // nanti asksi  logout
-  //             },
-  //             child: const Text('Logout'),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
   final List<Widget> _pages = const [DashboardContent(), Camera()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(onMenuPressed: toggleSidebar),
-      backgroundColor: Colors.white,
-      body: Row(
+      body: Stack(
         children: [
-          CustomSidebar(
-            isVisible: isSidebarVisible,
-            currentIndex: _currentIndex,
-            onMenuTap: onMenuTap,
-          ),
+          _pages[_currentIndex],
 
-          // Main content
-          Expanded(child: _pages[_currentIndex]),
+          if (isSidebarVisible)
+            GestureDetector(
+              onTap: toggleSidebar,
+              child: Container(color: Colors.black.withValues(alpha: 0.5)),
+            ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            left: isSidebarVisible ? 0 : -MediaQuery.of(context).size.width,
+            top: 0,
+            bottom: 0,
+            right: isSidebarVisible ? 0 : MediaQuery.of(context).size.width,
+            child: Row(
+              children: [
+                Container(
+                  width: 250,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        offset: const Offset(2, 0),
+                        blurRadius: 4,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: CustomSidebar(
+                    currentIndex: _currentIndex,
+                    onMenuTap: onMenuTap,
+                  ),
+                ),
+                Expanded(child: Container()),
+              ],
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: CustomNavbar(
