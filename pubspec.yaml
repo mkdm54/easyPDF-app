@@ -79,6 +79,17 @@ flutter_launcher_icons:
   image_path: "assets/images/app_icon.png"
   min_sdk_android: 21
 
+flutter_native_splash:
+  color: "#ffffff"
+  color_dark: "#212121"
+  image: "assets/images/app_icon.png"
+  android_12:
+    image: "assets/images/app_icon.png"
+    color_dark: "#212121"
+    icon_background_color: "#ffffff"
+    icon_background_color_dark: "#212121"
+
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
