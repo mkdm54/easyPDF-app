@@ -4,7 +4,6 @@ import 'package:easy_pdf/widgets/dashboard_widget/button_tools.dart';
 import 'package:easy_pdf/tools/jpg_to_pdf/jpg_to_pdf_tool.dart';
 import 'package:easy_pdf/tools/merge_pdf/merge_pdf_tool.dart';
 import 'package:easy_pdf/tools/open_pdf/open_pdf_viewer.dart';
-// import 'package:easy_pdf/tools/edit_pdf/edit_pdf_tool.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ButtonToolsCard extends StatefulWidget {
@@ -50,17 +49,6 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
     }
   }
 
-  // Fungsi placeholder untuk tools lainnya
-  // void _showComingSoon(String toolName) {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: Text('$toolName - Coming Soon!'),
-  //       backgroundColor: Colors.blue,
-  //       duration: Duration(seconds: 2),
-  //     ),
-  //   );
-  // }
-
   late final List<Map<String, dynamic>> listButtonTools;
 
   @override
@@ -69,12 +57,12 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
 
     listButtonTools = [
       {
-        'icon': Icon(Icons.picture_as_pdf, color: Colors.red, size: 35),
+        'icon': Icon(Icons.picture_as_pdf, color: Colors.blue, size: 35),
         'label': 'JPG to PDF',
         'onPressed': () => _navigateToJpgToPdfPage(),
       },
       {
-        'icon': Icon(Icons.remove_red_eye, color: Colors.blue, size: 35),
+        'icon': Icon(Icons.remove_red_eye, color: Colors.red, size: 35),
         'label': 'Open PDF',
         'onPressed': () => _pickPdfAndOpen(),
       },
@@ -94,32 +82,34 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final itemWidth =
+        (screenWidth - 20) /
+        3; // 20 untuk total jarak antar item (misalnya 2 x 5)
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: colors.surface,
       ),
-      child: Padding(
-        padding: EdgeInsets.all(12),
-        child: SizedBox(
-          width: double.infinity,
-          height: 230,
-          child: GridView.count(
-            scrollDirection: Axis.horizontal,
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 1,
-            children:
-                listButtonTools.map((item) {
-                  return ButtonTools(
-                    icon: item['icon'],
-                    label: item['label'],
-                    onpressed: item['onPressed'],
-                  );
-                }).toList(),
-          ),
+      child: SizedBox(
+        height: 120,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: listButtonTools.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 5),
+          itemBuilder: (context, index) {
+            final item = listButtonTools[index];
+            return SizedBox(
+              width: itemWidth,
+              child: ButtonTools(
+                icon: item['icon'],
+                label: item['label'],
+                onpressed: item['onPressed'],
+              ),
+            );
+          },
         ),
       ),
     );
