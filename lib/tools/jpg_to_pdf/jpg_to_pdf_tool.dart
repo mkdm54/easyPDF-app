@@ -79,9 +79,15 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
       Directory? dir = await getExternalStorageDirectory();
       dir ??= await getApplicationDocumentsDirectory();
 
+      // Buat folder jpg_to_pdf kalau belum ada
+      final targetDir = Directory('${dir.path}/jpg_to_pdf');
+      if (!await targetDir.exists()) {
+        await targetDir.create(recursive: true);
+      }
+
       final fileName =
           'jpg_to_pdf_${DateTime.now().millisecondsSinceEpoch}.pdf';
-      final filePath = '${dir.path}/$fileName';
+      final filePath = '${targetDir.path}/$fileName';
       final file = File(filePath);
       final pdfBytes = await pdf.save();
       await file.writeAsBytes(pdfBytes);
@@ -89,35 +95,36 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
       if (!mounted) return;
       showDialog(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("PDF Berhasil Dibuat"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("File berhasil disimpan di:"),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(4),
+        builder:
+            (ctx) => AlertDialog(
+              title: const Text("PDF Berhasil Dibuat"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("File berhasil disimpan di:"),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(filePath, style: const TextStyle(fontSize: 12)),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Ukuran: ${(pdfBytes.length / 1024).toStringAsFixed(1)} KB",
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: const Text("OK"),
                 ),
-                child: Text(filePath, style: const TextStyle(fontSize: 12)),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "Ukuran: ${(pdfBytes.length / 1024).toStringAsFixed(1)} KB",
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text("OK"),
+              ],
             ),
-          ],
-        ),
       );
     } catch (e) {
       if (!mounted) return;
@@ -169,11 +176,7 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.image,
-                    color: Colors.blue,
-                    size: 50,
-                  ),
+                  const Icon(Icons.image, color: Colors.blue, size: 50),
                   const SizedBox(width: 12),
                   const Expanded(
                     child: Column(
@@ -217,144 +220,150 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: _selectedImage != null
-                  ? Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            color: Colors.grey[50],
-                            child: Row(
-                              children: [
-                                const Text(
-                                  'Gambar yang dipilih',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  '${(_selectedImage!.lengthSync() / 1024).toStringAsFixed(1)} KB',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
+              child:
+                  _selectedImage != null
+                      ? Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey[300]!),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              color: Colors.grey[50],
+                              child: Row(
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(
-                                        color: Colors.grey[200]!,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.image,
-                                          color: Colors.blue,
-                                          size: 20,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: Text(
-                                            _selectedImage!.path.split('/').last,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: _clearImage,
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.red,
-                                            size: 14,
-                                          ),
-                                        ),
-                                      ],
+                                  const Text(
+                                    'Gambar yang dipilih',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  const SizedBox(height: 16),
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.file(
-                                        _selectedImage!,
-                                        fit: BoxFit.contain,
-                                        width: double.infinity,
-                                      ),
+                                  const Spacer(),
+                                  Text(
+                                    '${(_selectedImage!.lengthSync() / 1024).toStringAsFixed(1)} KB',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.cloud_upload_outlined,
-                              color: Colors.grey,
-                              size: 64,
-                            ),
-                            SizedBox(height: 16),
-                            Text(
-                              "Belum ada gambar dipilih",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              "Klik tombol di atas untuk memilih gambar",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(
+                                          color: Colors.grey[200]!,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.image,
+                                            color: Colors.blue,
+                                            size: 20,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              _selectedImage!.path
+                                                  .split('/')
+                                                  .last,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: _clearImage,
+                                            child: const Icon(
+                                              Icons.close,
+                                              color: Colors.red,
+                                              size: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Expanded(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.file(
+                                          _selectedImage!,
+                                          fit: BoxFit.contain,
+                                          width: double.infinity,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
                         ),
+                      )
+                      : Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey[300]!),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.cloud_upload_outlined,
+                                color: Colors.grey,
+                                size: 64,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                "Belum ada gambar dipilih",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                "Klik tombol di atas untuk memilih gambar",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
             ),
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed:
-                    (_isConverting || _selectedImage == null) ? null : _convertToPdf,
-                icon: _isConverting
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Icon(Icons.picture_as_pdf, size: 20),
+                    (_isConverting || _selectedImage == null)
+                        ? null
+                        : _convertToPdf,
+                icon:
+                    _isConverting
+                        ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                        : const Icon(Icons.picture_as_pdf, size: 20),
                 label: Text(_isConverting ? "Memproses..." : "Konversi ke PDF"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromRGBO(221, 25, 11, 1.0),
