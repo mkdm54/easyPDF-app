@@ -76,12 +76,18 @@ class _MergePdfToolState extends State<MergePdfTool> {
         doc.dispose();
       }
 
-      final dir =
-          await getExternalStorageDirectory() ??
-          await getApplicationDocumentsDirectory();
+      Directory? dir = await getExternalStorageDirectory();
+      dir ??= await getApplicationDocumentsDirectory();
+
+      // Buat folder merge_pdf kalau belum ada
+      final targetDir = Directory('${dir.path}/merge_pdf');
+      if (!await targetDir.exists()) {
+        await targetDir.create(recursive: true);
+      }
+
       final fileName =
           'merged_pdf_${DateTime.now().millisecondsSinceEpoch}.pdf';
-      final filePath = '${dir.path}/$fileName';
+      final filePath = '${targetDir.path}/$fileName';
       final fileOut = File(filePath);
       final bytesOut = mergedDocument.saveSync();
       await fileOut.writeAsBytes(bytesOut);
@@ -389,7 +395,7 @@ class _MergePdfToolState extends State<MergePdfTool> {
                         : const Icon(Icons.merge_type, size: 20),
                 label: Text(_isMerging ? "Memproses..." : "Gabungkan PDF"),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromRGBO(221, 25, 11, 1.0),
+                  backgroundColor: const Color.fromRGBO(221, 25, 11, 1.0),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
