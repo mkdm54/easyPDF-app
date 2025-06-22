@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_pdf/screens/dashboard_content.dart';
-import 'package:easy_pdf/screens/camera.dart';
+import 'package:easy_pdf/screens/camera_scan_page.dart';
 import 'package:easy_pdf/widgets/custom_app_bar.dart';
 import 'package:easy_pdf/widgets/custom_sidebar.dart';
 import 'package:easy_pdf/widgets/custom_bottom_navbar.dart';
@@ -23,7 +23,7 @@ class _MainDashboardState extends State<MainDashboard> {
   int _currentIndex = 0;
   bool isSidebarVisible = false;
 
-  final List<Widget> _pages = const [DashboardContent(), Camera()];
+  final List<Widget> _pages = const [DashboardContent(), CameraScanPage()];
 
   void toggleSidebar() {
     setState(() {
