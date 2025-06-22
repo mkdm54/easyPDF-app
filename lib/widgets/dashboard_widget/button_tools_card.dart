@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:easy_pdf/widgets/dashboard_widget/button_tools.dart';
 import 'package:easy_pdf/tools/jpg_to_pdf/jpg_to_pdf_tool.dart';
 import 'package:easy_pdf/tools/merge_pdf/merge_pdf_tool.dart';
+import 'package:easy_pdf/tools/open_pdf/open_pdf_viewer.dart';
 // import 'package:easy_pdf/tools/edit_pdf/edit_pdf_tool.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -25,6 +27,27 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
       context,
       MaterialPageRoute(builder: (context) => const MergePdfTool()),
     );
+  }
+
+  void _pickPdfAndOpen() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (!mounted) return;
+
+    if (result != null && result.files.single.path != null) {
+      final filePath = result.files.single.path!;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => OpenPdfViewer(path: filePath)),
+      );
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Tidak ada file dipilih")));
+    }
   }
 
   // void _navigateToEditPdfPage() {
@@ -64,9 +87,9 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
         'onPressed': () => _navigateToJpgToPdfPage(),
       },
       {
-        'icon': Icon(Icons.image, color: Colors.blue, size: 35),
-        'label': 'PDF to JPG',
-        'onPressed': () => _showComingSoon('PDF to JPG'),
+        'icon': Icon(Icons.remove_red_eye, color: Colors.blue, size: 35),
+        'label': 'Open PDF',
+        'onPressed': () => _pickPdfAndOpen(),
       },
       {
         'icon': Icon(Icons.camera_alt, color: Colors.green, size: 35),
