@@ -83,13 +83,40 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
           'jpg_to_pdf_${DateTime.now().millisecondsSinceEpoch}.pdf';
       final filePath = '${dir.path}/$fileName';
       final file = File(filePath);
-      await file.writeAsBytes(await pdf.save());
+      final pdfBytes = await pdf.save();
+      await file.writeAsBytes(pdfBytes);
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("PDF berhasil disimpan di: $filePath"),
-          duration: const Duration(seconds: 5),
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text("PDF Berhasil Dibuat"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("File berhasil disimpan di:"),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(filePath, style: const TextStyle(fontSize: 12)),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Ukuran: ${(pdfBytes.length / 1024).toStringAsFixed(1)} KB",
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text("OK"),
+            ),
+          ],
         ),
       );
     } catch (e) {
@@ -106,6 +133,12 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
     }
   }
 
+  void _clearImage() {
+    setState(() {
+      _selectedImage = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,133 +146,223 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
         title: const Text("JPG to PDF Tool"),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
+        actions: [
+          if (_selectedImage != null)
+            IconButton(
+              icon: const Icon(Icons.clear_all),
+              onPressed: _clearImage,
+              tooltip: 'Hapus gambar',
+            ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            SizedBox(
+            Container(
               width: double.infinity,
-              height: 100,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.blue[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue[200]!),
+              ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.image, color: Colors.blue, size: 100),
-                  const SizedBox(width: 8),
-                  const Flexible(
-                    child: Text(
-                      'Konversi gambar JPG ke file PDF dengan mudah dan cepat.',
-                      style: TextStyle(fontSize: 14),
+                  const Icon(
+                    Icons.image,
+                    color: Colors.blue,
+                    size: 50,
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'JPG to PDF Converter',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Konversi gambar JPG ke file PDF dengan mudah dan cepat.',
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-            const Divider(),
             const SizedBox(height: 20),
-            GestureDetector(
-              onTap: _isConverting ? null : _pickImage,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 24,
-                ),
-                decoration: BoxDecoration(
-                  color: _isConverting ? Colors.grey : Colors.blue,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.withValues(alpha: 0.5),
-                      blurRadius: 4,
-                      offset: const Offset(2, 2),
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Text(
-                    "Pilih Gambar",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: _isConverting ? null : _pickImage,
+                icon: const Icon(Icons.add),
+                label: const Text("Pilih Gambar"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 16),
-            _selectedImage != null
-                ? Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey[300]!),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.file(
-                      _selectedImage!,
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                )
-                : Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey[300]!),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      "Belum ada gambar dipilih",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ),
-            const SizedBox(height: 16),
-            GestureDetector(
-              onTap: _isConverting ? null : _convertToPdf,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 24,
-                ),
-                decoration: BoxDecoration(
-                  color: _isConverting ? Colors.grey : Colors.green,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: (_isConverting ? Colors.grey : Colors.green)
-                          .withValues(alpha: 0.5),
-                      blurRadius: 4,
-                      offset: const Offset(2, 2),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child:
-                      _isConverting
-                          ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
-                          : const Text(
-                            "Konversi ke PDF",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+            Expanded(
+              child: _selectedImage != null
+                  ? Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey[300]!),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            color: Colors.grey[50],
+                            child: Row(
+                              children: [
+                                const Text(
+                                  'Gambar yang dipilih',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  '${(_selectedImage!.lengthSync() / 1024).toStringAsFixed(1)} KB',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(
+                                        color: Colors.grey[200]!,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.image,
+                                          color: Colors.blue,
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            _selectedImage!.path.split('/').last,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: _clearImage,
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.red,
+                                            size: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Expanded(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.file(
+                                        _selectedImage!,
+                                        fit: BoxFit.contain,
+                                        width: double.infinity,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey[300]!),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.cloud_upload_outlined,
+                              color: Colors.grey,
+                              size: 64,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              "Belum ada gambar dipilih",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              "Klik tombol di atas untuk memilih gambar",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed:
+                    (_isConverting || _selectedImage == null) ? null : _convertToPdf,
+                icon: _isConverting
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(Icons.picture_as_pdf, size: 20),
+                label: Text(_isConverting ? "Memproses..." : "Konversi ke PDF"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(221, 25, 11, 1.0),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ),
