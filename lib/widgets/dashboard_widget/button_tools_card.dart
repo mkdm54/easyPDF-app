@@ -50,23 +50,16 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
     }
   }
 
-  // void _navigateToEditPdfPage() {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(builder: (context) => const EditPdfTool()),
+  // Fungsi placeholder untuk tools lainnya
+  // void _showComingSoon(String toolName) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text('$toolName - Coming Soon!'),
+  //       backgroundColor: Colors.blue,
+  //       duration: Duration(seconds: 2),
+  //     ),
   //   );
   // }
-
-  // Fungsi placeholder untuk tools lainnya
-  void _showComingSoon(String toolName) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$toolName - Coming Soon!'),
-        backgroundColor: Colors.blue,
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
 
   late final List<Map<String, dynamic>> listButtonTools;
 
@@ -76,12 +69,6 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
 
     listButtonTools = [
       {
-        'icon': Icon(Icons.edit, color: Colors.orange[300], size: 35),
-        'label': 'Edit PDF',
-        // 'onPressed': () => _navigateToEditPdfPage(),
-        'onPressed': () => _showComingSoon('edit PDF'),
-      },
-      {
         'icon': Icon(Icons.picture_as_pdf, color: Colors.red, size: 35),
         'label': 'JPG to PDF',
         'onPressed': () => _navigateToJpgToPdfPage(),
@@ -90,16 +77,6 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
         'icon': Icon(Icons.remove_red_eye, color: Colors.blue, size: 35),
         'label': 'Open PDF',
         'onPressed': () => _pickPdfAndOpen(),
-      },
-      {
-        'icon': Icon(Icons.camera_alt, color: Colors.green, size: 35),
-        'label': 'Scan to PDF',
-        'onPressed': () => _showComingSoon('Scan to PDF'),
-      },
-      {
-        'icon': Icon(Icons.compress, color: Colors.pink, size: 35),
-        'label': 'Compress Image',
-        'onPressed': () => _showComingSoon('Compress Image'),
       },
       {
         'icon': SvgPicture.asset(
