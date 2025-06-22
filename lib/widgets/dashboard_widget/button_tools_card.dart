@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_pdf/widgets/dashboard_widget/button_tools.dart';
 import 'package:easy_pdf/tools/jpg_to_pdf/jpg_to_pdf_tool.dart';
+import 'package:easy_pdf/tools/merge_pdf/merge_pdf_tool.dart';
 // import 'package:easy_pdf/tools/edit_pdf/edit_pdf_tool.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -16,6 +17,13 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const JpgToPdfTool()),
+    );
+  }
+
+  void _navigateToMergePdfTool() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MergePdfTool()),
     );
   }
 
@@ -78,7 +86,7 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
           colorFilter: const ColorFilter.mode(Colors.purple, BlendMode.srcIn),
         ),
         'label': 'Merge PDF',
-        'onPressed': () => _showComingSoon('Merge PDF'),
+        'onPressed': () => _navigateToMergePdfTool(),
       },
     ];
   }
