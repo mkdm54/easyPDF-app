@@ -5,15 +5,28 @@ import 'package:easy_pdf/theme/app_theme.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-    WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
   // menghilangkan status bar, bisa muncul ketika swipe & hilang otomatis
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  void _setThemeMode(bool isDark) {
+    setState(() {
+      _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +34,12 @@ class MyApp extends StatelessWidget {
       title: 'easy PDF',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: _themeMode,
       debugShowCheckedModeBanner: false,
-      home: const MainDashboard(),
+      home: MainDashboard(
+        isDarkMode: _themeMode == ThemeMode.dark,
+        onThemeToggle: (isDark) => _setThemeMode(isDark),
+      ),
     );
   }
 }

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:easy_pdf/widgets/sidebar_widget/theme_btn_toggle.dart';
 
 class CustomSidebar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onMenuTap;
+  final bool isDarkMode;
+  final ValueChanged<bool> onThemeToggle;
 
   const CustomSidebar({
     super.key,
     required this.currentIndex,
     required this.onMenuTap,
+    required this.isDarkMode,
+    required this.onThemeToggle,
   });
 
   @override
@@ -37,60 +42,43 @@ class CustomSidebar extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
-          _buildMenuItem(
+          _buildNavItem(
             context: context,
             icon: Icons.dashboard,
             title: 'Dashboard',
             index: 0,
           ),
-          _buildMenuItem(
+          _buildNavItem(
             context: context,
             icon: Icons.camera_alt,
             title: 'Camera',
             index: 1,
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.sunny),
-            title: Row(
-              children: [
-                const Text('Theme'),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: const Text(
-                    'New',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ),
-              ],
+          _buildCustomContentItem(
+            child: ThemeBtnToggle(
+              isDarkMode: isDarkMode,
+              onToggle: onThemeToggle,
             ),
-            contentPadding: EdgeInsets.zero,
-            onTap: () {
-              // Handle theme toggle
-            },
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.help),
+          _buildMenuItem(
+            context: context,
+            icon: Icons.help,
             title: const Text('Help'),
-            contentPadding: EdgeInsets.zero,
             onTap: () {
               // Handle help
             },
           ),
           const Spacer(),
-          ListTile(
-            leading: const Icon(Icons.logout, color: Colors.red),
+          _buildMenuItem(
+            context: context,
+            icon: Icons.logout,
             title: const Text(
               'Logout',
               style: TextStyle(color: Colors.red),
             ),
-            contentPadding: EdgeInsets.zero,
+            iconColor: Colors.red,
             onTap: () {
               // Handle logout
             },
@@ -100,7 +88,7 @@ class CustomSidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem({
+  Widget _buildNavItem({
     required BuildContext context,
     required IconData icon,
     required String title,
@@ -130,6 +118,39 @@ class CustomSidebar extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(horizontal: 12),
         onTap: () => onMenuTap(index),
       ),
+    );
+  }
+
+  Widget _buildMenuItem({
+    required BuildContext context,
+    required IconData icon,
+    required Widget title,
+    Color? iconColor,
+    required VoidCallback onTap,
+  }) {
+    final colors = Theme.of(context).colorScheme;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 2),
+      child: ListTile(
+        leading: Icon(
+          icon,
+          color: iconColor ?? colors.onSurface,
+        ),
+        title: title,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+        onTap: onTap,
+      ),
+    );
+  }
+
+  Widget _buildCustomContentItem({
+    required Widget child,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: child,
     );
   }
 }

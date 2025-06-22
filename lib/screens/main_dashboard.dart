@@ -6,7 +6,14 @@ import 'package:easy_pdf/widgets/custom_sidebar.dart';
 import 'package:easy_pdf/widgets/custom_bottom_navbar.dart';
 
 class MainDashboard extends StatefulWidget {
-  const MainDashboard({super.key});
+  final bool isDarkMode;
+  final ValueChanged<bool> onThemeToggle;
+
+  const MainDashboard({
+    super.key,
+    required this.isDarkMode,
+    required this.onThemeToggle,
+  });
 
   @override
   State<MainDashboard> createState() => _MainDashboardState();
@@ -15,6 +22,8 @@ class MainDashboard extends StatefulWidget {
 class _MainDashboardState extends State<MainDashboard> {
   int _currentIndex = 0;
   bool isSidebarVisible = false;
+
+  final List<Widget> _pages = const [DashboardContent(), Camera()];
 
   void toggleSidebar() {
     setState(() {
@@ -25,10 +34,9 @@ class _MainDashboardState extends State<MainDashboard> {
   void onMenuTap(int index) {
     setState(() {
       _currentIndex = index;
+      isSidebarVisible = false;
     });
   }
-
-  final List<Widget> _pages = const [DashboardContent(), Camera()];
 
   @override
   Widget build(BuildContext context) {
@@ -37,38 +45,24 @@ class _MainDashboardState extends State<MainDashboard> {
       body: Stack(
         children: [
           _pages[_currentIndex],
-
           if (isSidebarVisible)
             GestureDetector(
               onTap: toggleSidebar,
               child: Container(color: Colors.black.withValues(alpha: 0.5)),
             ),
-
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
-            left: isSidebarVisible ? 0 : -MediaQuery.of(context).size.width,
+            left: isSidebarVisible ? 0 : -250,
             top: 0,
             bottom: 0,
-            right: isSidebarVisible ? 0 : MediaQuery.of(context).size.width,
+            right: 0,
             child: Row(
               children: [
-                Container(
-                  width: 250,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        offset: const Offset(2, 0),
-                        blurRadius: 4,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
-                  child: CustomSidebar(
-                    currentIndex: _currentIndex,
-                    onMenuTap: onMenuTap,
-                  ),
+                CustomSidebar(
+                  currentIndex: _currentIndex,
+                  onMenuTap: onMenuTap,
+                  isDarkMode: widget.isDarkMode,
+                  onThemeToggle: widget.onThemeToggle,
                 ),
                 Expanded(child: Container()),
               ],
