@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:easy_pdf/screens/splash_screen/splash_screen.dart';
 import 'package:easy_pdf/screens/main_dashboard.dart';
 import 'package:easy_pdf/theme/app_theme.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/services.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // menghilangkan status bar, bisa muncul ketika swipe & hilang otomatis
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(const MyApp());
 }
@@ -20,7 +18,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode _themeMode = ThemeMode.light;
 
   void _setThemeMode(bool isDark) {
     setState(() {
