@@ -105,36 +105,52 @@ class _ImageToPdfState extends State<ImageToPdf> {
       if (!mounted) return;
       showDialog(
         context: context,
-        builder:
-            (ctx) => AlertDialog(
-              title: const Text("PDF Berhasil Dibuat"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("File berhasil disimpan di:"),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(4),
+        builder: (ctx) {
+          final colors = Theme.of(ctx).colorScheme;
+          return AlertDialog(
+            backgroundColor: colors.surface,
+            title: Text(
+              "PDF Berhasil Dibuat",
+              style: TextStyle(color: colors.onSurface),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "File berhasil disimpan di:",
+                  style: TextStyle(color: colors.onSurface),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: colors.onSurface,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    filePath,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: colors.surface,
                     ),
-                    child: Text(filePath, style: const TextStyle(fontSize: 12)),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Ukuran: ${(pdfBytes.length / 1024).toStringAsFixed(1)} KB",
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: const Text("OK"),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Ukuran: ${(pdfBytes.length / 1024).toStringAsFixed(1)} KB",
+                  style: TextStyle(color: colors.onSurface),
                 ),
               ],
             ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: Text("OK", style: TextStyle(color: colors.primary)),
+              ),
+            ],
+          );
+        },
       );
     } catch (e) {
       if (!mounted) return;
