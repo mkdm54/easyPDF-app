@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:image/image.dart' as img;
@@ -78,13 +77,13 @@ class _CameraScanPageState extends State<CameraScanPage> {
 
     await _controller?.dispose();
     _currentCameraIndex = (_currentCameraIndex + 1) % _cameras!.length;
-    
+
     _controller = CameraController(
       _cameras![_currentCameraIndex],
       ResolutionPreset.high,
       enableAudio: false,
     );
-    
+
     try {
       await _controller!.initialize();
       setState(() {
@@ -94,9 +93,9 @@ class _CameraScanPageState extends State<CameraScanPage> {
       setState(() {
         _isProcessing = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error switching camera: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error switching camera: $e')));
     }
   }
 
@@ -109,7 +108,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
       });
 
       final XFile image = await _controller!.takePicture();
-      
+
       setState(() {
         _capturedImagePaths.add(image.path);
         _isProcessing = false;
@@ -117,13 +116,18 @@ class _CameraScanPageState extends State<CameraScanPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('📸 Photo captured! Total: ${_capturedImagePaths.length} pages'),
+          content: Text(
+            '📸 Photo captured! Total: ${_capturedImagePaths.length} pages',
+          ),
           backgroundColor: Colors.green,
-          action: _capturedImagePaths.isNotEmpty ? SnackBarAction(
-            label: 'Create PDF',
-            textColor: Colors.white,
-            onPressed: _createPDF,
-          ) : null,
+          action:
+              _capturedImagePaths.isNotEmpty
+                  ? SnackBarAction(
+                    label: 'Create PDF',
+                    textColor: Colors.white,
+                    onPressed: _createPDF,
+                  )
+                  : null,
         ),
       );
     } catch (e) {
@@ -156,26 +160,26 @@ class _CameraScanPageState extends State<CameraScanPage> {
 
     try {
       final pdf = pw.Document();
-      
+
       for (int i = 0; i < _capturedImagePaths.length; i++) {
         final imagePath = _capturedImagePaths[i];
         final imageFile = File(imagePath);
         final imageBytes = await imageFile.readAsBytes();
-        
+
         // Decode and optimize image
         final image = img.decodeImage(imageBytes);
         if (image != null) {
           // Resize if too large to optimize PDF size
           final resizedImage = img.copyResize(
-            image, 
+            image,
             width: image.width > 1200 ? 1200 : image.width,
           );
           final optimizedBytes = Uint8List.fromList(
-            img.encodeJpg(resizedImage, quality: 85)
+            img.encodeJpg(resizedImage, quality: 85),
           );
-          
+
           final pdfImage = pw.MemoryImage(optimizedBytes);
-          
+
           pdf.addPage(
             pw.Page(
               pageFormat: PdfPageFormat.a4,
@@ -185,10 +189,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
                   children: [
                     pw.Expanded(
                       child: pw.Center(
-                        child: pw.Image(
-                          pdfImage, 
-                          fit: pw.BoxFit.contain,
-                        ),
+                        child: pw.Image(pdfImage, fit: pw.BoxFit.contain),
                       ),
                     ),
                     pw.SizedBox(height: 10),
@@ -207,21 +208,23 @@ class _CameraScanPageState extends State<CameraScanPage> {
         }
       }
 
-      // Save PDF with timestamp
-      final directory = await getApplicationDocumentsDirectory();
+      final dir = Directory('/storage/emulated/0/easy-pdf/scan-pdf');
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
       final timestamp = DateTime.now();
-      final formattedTime = '${timestamp.day}-${timestamp.month}-${timestamp.year}_${timestamp.hour}-${timestamp.minute}';
-      final pdfPath = '${directory.path}/Scanned_Document_$formattedTime.pdf';
-      
+      final formattedTime =
+          '${timestamp.day}-${timestamp.month}-${timestamp.year}_${timestamp.hour}-${timestamp.minute}';
+      final pdfPath = '${dir.path}/Scanned_Document_$formattedTime.pdf';
+
       final file = File(pdfPath);
       await file.writeAsBytes(await pdf.save());
 
-      // Clean up temporary image files
+      
       for (String imagePath in _capturedImagePaths) {
         try {
           await File(imagePath).delete();
-        } catch (e) {
-        }
+        } catch (e) {}
       }
 
       // Clear captured images
@@ -257,7 +260,6 @@ class _CameraScanPageState extends State<CameraScanPage> {
           ),
         );
       }
-
     } catch (e) {
       setState(() {
         _isProcessing = false;
@@ -278,16 +280,17 @@ class _CameraScanPageState extends State<CameraScanPage> {
       // Delete the file
       try {
         File(_capturedImagePaths.last).delete();
-      } catch (e) {
-      }
-      
+      } catch (e) {}
+
       setState(() {
         _capturedImagePaths.removeLast();
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('🗑️ Last photo removed. Remaining: ${_capturedImagePaths.length}'),
+          content: Text(
+            '🗑️ Last photo removed. Remaining: ${_capturedImagePaths.length}',
+          ),
           backgroundColor: Colors.orange,
         ),
       );
@@ -299,40 +302,45 @@ class _CameraScanPageState extends State<CameraScanPage> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Clear All Photos'),
-        content: Text('Are you sure you want to remove all ${_capturedImagePaths.length} photos?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              // Delete all files
-              for (String path in _capturedImagePaths) {
-                try {
-                  File(path).delete();
-                } catch (e) {
-                }
-              }
-              
-              setState(() {
-                _capturedImagePaths.clear();
-              });
-              
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('🗑️ All photos cleared'),
-                  backgroundColor: Colors.orange,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Clear All Photos'),
+            content: Text(
+              'Are you sure you want to remove all ${_capturedImagePaths.length} photos?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  // Delete all files
+                  for (String path in _capturedImagePaths) {
+                    try {
+                      File(path).delete();
+                    } catch (e) {}
+                  }
+
+                  setState(() {
+                    _capturedImagePaths.clear();
+                  });
+
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('🗑️ All photos cleared'),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Clear All',
+                  style: TextStyle(color: Colors.red),
                 ),
-              );
-            },
-            child: const Text('Clear All', style: TextStyle(color: Colors.red)),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -343,8 +351,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
     for (String path in _capturedImagePaths) {
       try {
         File(path).delete();
-      } catch (e) {
-      }
+      } catch (e) {}
     }
     super.dispose();
   }
@@ -352,7 +359,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    
+
     if (!_isInitialized) {
       return Scaffold(
         backgroundColor: colors.surface,
@@ -374,10 +381,8 @@ class _CameraScanPageState extends State<CameraScanPage> {
       body: Stack(
         children: [
           // Camera preview
-          Positioned.fill(
-            child: CameraPreview(_controller!),
-          ),
-          
+          Positioned.fill(child: CameraPreview(_controller!)),
+
           // Document scanning overlay
           Positioned.fill(
             child: Container(
@@ -400,7 +405,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
               ),
             ),
           ),
-          
+
           // Top overlay with info
           Positioned(
             top: 50,
@@ -438,7 +443,10 @@ class _CameraScanPageState extends State<CameraScanPage> {
                   if (_capturedImagePaths.isNotEmpty)
                     Container(
                       margin: const EdgeInsets.only(top: 8),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.green.withOpacity(0.8),
                         borderRadius: BorderRadius.circular(20),
@@ -456,7 +464,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
               ),
             ),
           ),
-          
+
           // Processing indicator
           if (_isProcessing)
             Container(
@@ -488,45 +496,63 @@ class _CameraScanPageState extends State<CameraScanPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: _capturedImagePaths.isNotEmpty && !_isProcessing ? _clearAllPhotos : null,
+                  onPressed:
+                      _capturedImagePaths.isNotEmpty && !_isProcessing
+                          ? _clearAllPhotos
+                          : null,
                   icon: Icon(
                     Icons.clear_all,
-                    color: _capturedImagePaths.isNotEmpty ? Colors.red : Colors.grey,
+                    color:
+                        _capturedImagePaths.isNotEmpty
+                            ? Colors.red
+                            : Colors.grey,
                     size: 28,
                   ),
                 ),
                 Text(
                   'Clear All',
                   style: TextStyle(
-                    color: _capturedImagePaths.isNotEmpty ? Colors.red : Colors.grey,
+                    color:
+                        _capturedImagePaths.isNotEmpty
+                            ? Colors.red
+                            : Colors.grey,
                     fontSize: 12,
                   ),
                 ),
               ],
             ),
-            
+
             // Remove last photo
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: _capturedImagePaths.isNotEmpty && !_isProcessing ? _removeLastPhoto : null,
+                  onPressed:
+                      _capturedImagePaths.isNotEmpty && !_isProcessing
+                          ? _removeLastPhoto
+                          : null,
                   icon: Icon(
                     Icons.undo,
-                    color: _capturedImagePaths.isNotEmpty ? Colors.orange : Colors.grey,
+                    color:
+                        _capturedImagePaths.isNotEmpty
+                            ? Colors.orange
+                            : Colors.grey,
                     size: 28,
                   ),
                 ),
                 Text(
                   'Undo',
                   style: TextStyle(
-                    color: _capturedImagePaths.isNotEmpty ? Colors.orange : Colors.grey,
+                    color:
+                        _capturedImagePaths.isNotEmpty
+                            ? Colors.orange
+                            : Colors.grey,
                     fontSize: 12,
                   ),
                 ),
               ],
             ),
-            
+
             // Main capture button
             GestureDetector(
               onTap: _isProcessing ? null : _capturePhoto,
@@ -552,7 +578,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
                 ),
               ),
             ),
-            
+
             // Gallery/Preview
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -560,31 +586,41 @@ class _CameraScanPageState extends State<CameraScanPage> {
                 Stack(
                   children: [
                     IconButton(
-                      onPressed: _capturedImagePaths.isNotEmpty ? () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Captured Photos'),
-                            content: Text('You have ${_capturedImagePaths.length} photos ready for PDF conversion.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  _createPDF();
-                                },
-                                child: const Text('Create PDF'),
-                              ),
-                            ],
-                          ),
-                        );
-                      } : null,
+                      onPressed:
+                          _capturedImagePaths.isNotEmpty
+                              ? () {
+                                showDialog(
+                                  context: context,
+                                  builder:
+                                      (context) => AlertDialog(
+                                        title: const Text('Captured Photos'),
+                                        content: Text(
+                                          'You have ${_capturedImagePaths.length} photos ready for PDF conversion.',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed:
+                                                () => Navigator.pop(context),
+                                            child: const Text('Cancel'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              _createPDF();
+                                            },
+                                            child: const Text('Create PDF'),
+                                          ),
+                                        ],
+                                      ),
+                                );
+                              }
+                              : null,
                       icon: Icon(
                         Icons.photo_library,
-                        color: _capturedImagePaths.isNotEmpty ? Colors.blue : Colors.grey,
+                        color:
+                            _capturedImagePaths.isNotEmpty
+                                ? Colors.blue
+                                : Colors.grey,
                         size: 28,
                       ),
                     ),
@@ -613,29 +649,41 @@ class _CameraScanPageState extends State<CameraScanPage> {
                 Text(
                   'Gallery',
                   style: TextStyle(
-                    color: _capturedImagePaths.isNotEmpty ? Colors.blue : Colors.grey,
+                    color:
+                        _capturedImagePaths.isNotEmpty
+                            ? Colors.blue
+                            : Colors.grey,
                     fontSize: 12,
                   ),
                 ),
               ],
             ),
-            
+
             // Create PDF
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: _capturedImagePaths.isNotEmpty && !_isProcessing ? _createPDF : null,
+                  onPressed:
+                      _capturedImagePaths.isNotEmpty && !_isProcessing
+                          ? _createPDF
+                          : null,
                   icon: Icon(
                     Icons.picture_as_pdf,
-                    color: _capturedImagePaths.isNotEmpty ? Colors.green : Colors.grey,
+                    color:
+                        _capturedImagePaths.isNotEmpty
+                            ? Colors.green
+                            : Colors.grey,
                     size: 28,
                   ),
                 ),
                 Text(
                   'Create PDF',
                   style: TextStyle(
-                    color: _capturedImagePaths.isNotEmpty ? Colors.green : Colors.grey,
+                    color:
+                        _capturedImagePaths.isNotEmpty
+                            ? Colors.green
+                            : Colors.grey,
                     fontSize: 12,
                   ),
                 ),

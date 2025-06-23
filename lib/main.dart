@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> {
       title: 'easy PDF',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      // themeMode: _themeMode,
+      themeMode: _themeMode,
       debugShowCheckedModeBanner: false,
       home: MainDashboard(
         isDarkMode: _themeMode == ThemeMode.dark,
