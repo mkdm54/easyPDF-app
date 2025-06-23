@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_pdf/widgets/sidebar_widget/theme_btn_toggle.dart';
+import 'package:easy_pdf/screens/help_page.dart';
 
 class CustomSidebar extends StatelessWidget {
   final int currentIndex;
@@ -67,17 +68,17 @@ class CustomSidebar extends StatelessWidget {
             icon: Icons.help,
             title: const Text('Help'),
             onTap: () {
-              // Handle help
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const HelpPage()),
+              );
             },
           ),
           const Spacer(),
           _buildMenuItem(
             context: context,
             icon: Icons.logout,
-            title: const Text(
-              'Logout',
-              style: TextStyle(color: Colors.red),
-            ),
+            title: const Text('Logout', style: TextStyle(color: Colors.red)),
             iconColor: Colors.red,
             onTap: () {
               // Handle logout
@@ -133,10 +134,7 @@ class CustomSidebar extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 2),
       child: ListTile(
-        leading: Icon(
-          icon,
-          color: iconColor ?? colors.onSurface,
-        ),
+        leading: Icon(icon, color: iconColor ?? colors.onSurface),
         title: title,
         contentPadding: const EdgeInsets.symmetric(horizontal: 12),
         onTap: onTap,
@@ -144,9 +142,7 @@ class CustomSidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomContentItem({
-    required Widget child,
-  }) {
+  Widget _buildCustomContentItem({required Widget child}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 2),
       padding: const EdgeInsets.symmetric(horizontal: 12),
