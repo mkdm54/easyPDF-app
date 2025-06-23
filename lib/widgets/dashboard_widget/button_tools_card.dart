@@ -85,7 +85,7 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
     final screenWidth = MediaQuery.of(context).size.width;
     final itemWidth =
         (screenWidth - 20) /
-        3; // 20 untuk total jarak antar item (misalnya 2 x 5)
+        3;
 
     return Container(
       width: double.infinity,

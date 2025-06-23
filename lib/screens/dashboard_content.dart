@@ -15,7 +15,6 @@ class DashboardContent extends StatefulWidget {
 class _DashboardContentState extends State<DashboardContent> {
   List<File> pdfFiles = [];
   bool isLoading = true;
-  String debugInfo = '';
 
   @override
   void initState() {
@@ -26,7 +25,6 @@ class _DashboardContentState extends State<DashboardContent> {
   Future<void> _loadPdfFiles() async {
     setState(() {
       isLoading = true;
-      debugInfo = 'Loading...';
     });
 
     List<File> allPdfs = [];
@@ -59,13 +57,10 @@ class _DashboardContentState extends State<DashboardContent> {
       setState(() {
         pdfFiles = uniquePdfs.values.toList();
         isLoading = false;
-        debugInfo =
-            'Searched paths:\n${searchPaths.join('\n')}\n\nFound ${pdfFiles.length} PDF files';
       });
     } catch (e) {
       setState(() {
         isLoading = false;
-        debugInfo = 'Error: $e\n\nSearched paths:\n${searchPaths.join('\n')}';
       });
     }
   }
@@ -134,7 +129,6 @@ class _DashboardContentState extends State<DashboardContent> {
             Expanded(
               child: PdfListWidget(
                 pdfFiles: pdfFiles,
-                debugInfo: debugInfo,
                 isLoading: isLoading,
                 onRefresh: _loadPdfFiles,
               ),

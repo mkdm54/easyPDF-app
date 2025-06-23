@@ -1,18 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class PdfListWidget extends StatelessWidget {
   final List<File> pdfFiles;
-  final String debugInfo;
   final bool isLoading;
   final VoidCallback onRefresh;
 
   const PdfListWidget({
     super.key,
     required this.pdfFiles,
-    required this.debugInfo,
     required this.isLoading,
     required this.onRefresh,
   });
@@ -32,29 +30,9 @@ class PdfListWidget extends StatelessWidget {
             const Text(
               "Tidak ada PDF ditemukan",
               style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
-            ExpansionTile(
-              title: const Text("Debug Info"),
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  margin: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: colors.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    debugInfo,
-                    style: const TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       );
@@ -88,10 +66,11 @@ class PdfListWidget extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => Scaffold(
-                        appBar: AppBar(title: Text(fileName)),
-                        body: SfPdfViewer.file(file),
-                      ),
+                      builder:
+                          (_) => Scaffold(
+                            appBar: AppBar(title: Text(fileName)),
+                            body: SfPdfViewer.file(file),
+                          ),
                     ),
                   );
                 },
