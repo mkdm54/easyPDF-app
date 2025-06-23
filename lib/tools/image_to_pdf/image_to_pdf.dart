@@ -3,20 +3,34 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class JpgToPdfTool extends StatefulWidget {
-  const JpgToPdfTool({super.key});
+class ImageToPdf extends StatefulWidget {
+  const ImageToPdf({super.key});
 
   @override
-  State<JpgToPdfTool> createState() => _JpgToPdfToolState();
+  State<ImageToPdf> createState() => _ImageToPdfState();
 }
 
-class _JpgToPdfToolState extends State<JpgToPdfTool> {
+class _ImageToPdfState extends State<ImageToPdf> {
   File? _selectedImage;
   bool _isConverting = false;
 
+  Future<void> _requestStoragePermission() async {
+    if (await Permission.manageExternalStorage.isGranted) return;
+
+    var status = await Permission.manageExternalStorage.request();
+    if (!status.isGranted) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Izin akses penyimpanan diperlukan")),
+      );
+    }
+  }
+
   Future<void> _pickImage() async {
+    await _requestStoragePermission();
+
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.image,
@@ -76,18 +90,14 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
         ),
       );
 
-      Directory? dir = await getExternalStorageDirectory();
-      dir ??= await getApplicationDocumentsDirectory();
-
-      // Buat folder jpg_to_pdf kalau belum ada
-      final targetDir = Directory('${dir.path}/jpg_to_pdf');
-      if (!await targetDir.exists()) {
-        await targetDir.create(recursive: true);
+      final dir = Directory('/storage/emulated/0/easy-pdf/image-to-pdf');
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
       }
 
       final fileName =
-          'jpg_to_pdf_${DateTime.now().millisecondsSinceEpoch}.pdf';
-      final filePath = '${targetDir.path}/$fileName';
+          'image-to-pdf_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final filePath = '${dir.path}/$fileName';
       final file = File(filePath);
       final pdfBytes = await pdf.save();
       await file.writeAsBytes(pdfBytes);
@@ -148,6 +158,7 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text("JPG to PDF Tool"),
@@ -225,18 +236,18 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
                       ? Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey[300]!),
-                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
                           children: [
                             Container(
                               padding: const EdgeInsets.all(12),
-                              color: Colors.grey[50],
+                              color: colors.surface,
                               child: Row(
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Gambar yang dipilih',
                                     style: TextStyle(
+                                      color: colors.onSurface,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -245,7 +256,7 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
                                     '${(_selectedImage!.lengthSync() / 1024).toStringAsFixed(1)} KB',
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: Colors.grey[600],
+                                      color: colors.onSurface,
                                     ),
                                   ),
                                 ],
@@ -259,7 +270,7 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
                                     Container(
                                       padding: const EdgeInsets.all(12),
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: colors.surface,
                                         borderRadius: BorderRadius.circular(6),
                                         border: Border.all(
                                           color: Colors.grey[200]!,
@@ -279,7 +290,8 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
                                                   .split('/')
                                                   .last,
                                               overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
+                                              style: TextStyle(
+                                                color: colors.onSurface,
                                                 fontSize: 12,
                                               ),
                                             ),
@@ -289,7 +301,7 @@ class _JpgToPdfToolState extends State<JpgToPdfTool> {
                                             child: const Icon(
                                               Icons.close,
                                               color: Colors.red,
-                                              size: 14,
+                                              size: 20,
                                             ),
                                           ),
                                         ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:easy_pdf/widgets/dashboard_widget/button_tools.dart';
-import 'package:easy_pdf/tools/jpg_to_pdf/jpg_to_pdf_tool.dart';
+import 'package:easy_pdf/tools/image_to_pdf/image_to_pdf.dart';
 import 'package:easy_pdf/tools/merge_pdf/merge_pdf_tool.dart';
 import 'package:easy_pdf/tools/open_pdf/open_pdf_viewer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,7 +17,7 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
   void _navigateToJpgToPdfPage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const JpgToPdfTool()),
+      MaterialPageRoute(builder: (context) => const ImageToPdf()),
     );
   }
 
