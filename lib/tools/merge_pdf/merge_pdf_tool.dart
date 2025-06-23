@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 class MergePdfTool extends StatefulWidget {
@@ -76,18 +75,13 @@ class _MergePdfToolState extends State<MergePdfTool> {
         doc.dispose();
       }
 
-      Directory? dir = await getExternalStorageDirectory();
-      dir ??= await getApplicationDocumentsDirectory();
-
-      // Buat folder merge_pdf kalau belum ada
-      final targetDir = Directory('${dir.path}/merge_pdf');
-      if (!await targetDir.exists()) {
-        await targetDir.create(recursive: true);
+      final dir = Directory('/storage/emulated/0/easy-pdf/merge-pdf');
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
       }
 
-      final fileName =
-          'merged_pdf_${DateTime.now().millisecondsSinceEpoch}.pdf';
-      final filePath = '${targetDir.path}/$fileName';
+      final fileName = 'merge_pdf_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final filePath = '${dir.path}/$fileName';
       final fileOut = File(filePath);
       final bytesOut = mergedDocument.saveSync();
       await fileOut.writeAsBytes(bytesOut);
@@ -163,6 +157,7 @@ class _MergePdfToolState extends State<MergePdfTool> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Merge PDF Tool"),
@@ -248,18 +243,18 @@ class _MergePdfToolState extends State<MergePdfTool> {
                       ? Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey[300]!),
-                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
                           children: [
                             Container(
                               padding: const EdgeInsets.all(12),
-                              color: Colors.grey[50],
+                              color: colors.surface,
                               child: Row(
                                 children: [
                                   Text(
                                     'File yang dipilih (${_selectedPdfs.length})',
-                                    style: const TextStyle(
+                                    style: TextStyle(
+                                      color: colors.onSurface,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -268,7 +263,7 @@ class _MergePdfToolState extends State<MergePdfTool> {
                                     'Tekan & tahan untuk mengatur urutan',
                                     style: TextStyle(
                                       fontSize: 10,
-                                      color: Colors.grey[600],
+                                      color: colors.onSurface,
                                     ),
                                   ),
                                 ],
@@ -289,7 +284,7 @@ class _MergePdfToolState extends State<MergePdfTool> {
                                     ),
                                     padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: colors.surface,
                                       borderRadius: BorderRadius.circular(6),
                                       border: Border.all(
                                         color: Colors.grey[200]!,
@@ -323,7 +318,7 @@ class _MergePdfToolState extends State<MergePdfTool> {
                                           '${(fileSize / 1024).toStringAsFixed(1)} KB',
                                           style: TextStyle(
                                             fontSize: 10,
-                                            color: Colors.grey[600],
+                                            color: colors.onSurface,
                                           ),
                                         ),
                                         const SizedBox(width: 8),
@@ -332,7 +327,7 @@ class _MergePdfToolState extends State<MergePdfTool> {
                                           child: const Icon(
                                             Icons.close,
                                             color: Colors.red,
-                                            size: 14,
+                                            size: 20,
                                           ),
                                         ),
                                       ],
