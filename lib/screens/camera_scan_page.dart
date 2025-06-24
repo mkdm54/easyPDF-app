@@ -93,6 +93,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
       setState(() {
         _isProcessing = false;
       });
+      if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Error switching camera: $e')));
@@ -113,7 +114,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
         _capturedImagePaths.add(image.path);
         _isProcessing = false;
       });
-
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -134,6 +135,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
       setState(() {
         _isProcessing = false;
       });
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('❌ Error capturing photo: $e'),
@@ -220,11 +222,12 @@ class _CameraScanPageState extends State<CameraScanPage> {
       final file = File(pdfPath);
       await file.writeAsBytes(await pdf.save());
 
-      
       for (String imagePath in _capturedImagePaths) {
         try {
           await File(imagePath).delete();
-        } catch (e) {}
+        } catch (e) {
+          // !
+        }
       }
 
       // Clear captured images
@@ -280,7 +283,9 @@ class _CameraScanPageState extends State<CameraScanPage> {
       // Delete the file
       try {
         File(_capturedImagePaths.last).delete();
-      } catch (e) {}
+      } catch (e) {
+        //!
+      }
 
       setState(() {
         _capturedImagePaths.removeLast();
@@ -319,7 +324,9 @@ class _CameraScanPageState extends State<CameraScanPage> {
                   for (String path in _capturedImagePaths) {
                     try {
                       File(path).delete();
-                    } catch (e) {}
+                    } catch (e) {
+                      //!
+                    }
                   }
 
                   setState(() {
@@ -351,7 +358,9 @@ class _CameraScanPageState extends State<CameraScanPage> {
     for (String path in _capturedImagePaths) {
       try {
         File(path).delete();
-      } catch (e) {}
+      } catch (e) {
+        //!
+      }
     }
     super.dispose();
   }
@@ -389,7 +398,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
               margin: const EdgeInsets.all(40),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(12),
@@ -398,7 +407,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
@@ -414,7 +423,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
+                color: Colors.black.withValues(alpha: 0.7),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -565,7 +574,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
                   border: Border.all(color: Colors.white, width: 4),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       blurRadius: 10,
                       spreadRadius: 2,
                     ),

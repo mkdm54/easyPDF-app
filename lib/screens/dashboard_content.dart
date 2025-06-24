@@ -42,6 +42,7 @@ class _DashboardContentState extends State<DashboardContent> {
       setState(() {
         isLoading = false;
       });
+      if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Gagal memuat file PDF: $e')));
@@ -119,8 +120,7 @@ class _DashboardContentState extends State<DashboardContent> {
                 child: PdfListWidget(
                   pdfFiles: pdfFiles,
                   isLoading: isLoading,
-                  onRefresh:
-                      _loadPdfFiles,
+                  onRefresh: _loadPdfFiles,
                 ),
               ),
             ),
