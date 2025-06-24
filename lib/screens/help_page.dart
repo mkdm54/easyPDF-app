@@ -11,6 +11,7 @@ class HelpPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: colors.surface,
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         title: const Text(
           "Pusat Bantuan",
           style: TextStyle(color: Colors.white),

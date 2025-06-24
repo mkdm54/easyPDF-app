@@ -14,7 +14,11 @@ class OpenPdfViewer extends StatelessWidget {
     final fileName = p.basename(path);
 
     return Scaffold(
-      appBar: AppBar(title: Text(fileName), backgroundColor: colors.primary),
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(fileName, style: TextStyle(color: Colors.white)),
+        backgroundColor: colors.primary,
+      ),
       body: SfPdfViewer.file(File(path)),
     );
   }

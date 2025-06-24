@@ -26,15 +26,40 @@ class PdfListWidget extends StatelessWidget {
 
     if (pdfFiles.isEmpty) {
       return SingleChildScrollView(
-        child: Column(
-          children: [
-            const Text(
-              "Tidak ada PDF ditemukan",
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
+        child: Center(
+          // <-- ini memastikan isinya di tengah horizontal
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.search_off,
+                  size: 80,
+                  color: colors.primary.withValues(alpha: 0.6),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "Tidak ada PDF yang ditemukan",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: colors.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  "Silakan tambahkan file PDF untuk ditampilkan di sini.",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: colors.onSurfaceVariant.withValues(alpha: 0.7),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-          ],
+          ),
         ),
       );
     }
