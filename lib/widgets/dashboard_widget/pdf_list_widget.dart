@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class PdfListWidget extends StatelessWidget {
   final List<File> pdfFiles;
@@ -75,13 +76,13 @@ class PdfListWidget extends StatelessWidget {
                   );
                 },
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(10),
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.picture_as_pdf,
-                        color: colors.primary,
-                        size: 36,
+                      SvgPicture.asset(
+                        'assets/svg/app_icon.svg',
+                        width: 40,
+                        height: 40,
                       ),
                       const SizedBox(width: 12),
                       Expanded(
