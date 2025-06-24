@@ -4,16 +4,19 @@ class ButtonTools extends StatelessWidget {
   final Widget icon;
   final String label;
   final VoidCallback? onpressed;
+  final Color backgroundColor;
 
   const ButtonTools({
     super.key,
     required this.icon,
     required this.label,
+    required this.backgroundColor,
     this.onpressed,
   });
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onpressed,
       borderRadius: BorderRadius.circular(12),
@@ -24,16 +27,8 @@ class ButtonTools extends StatelessWidget {
             width: 70,
             height: 70,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: backgroundColor,
               borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withValues(alpha: 0.5),
-                  spreadRadius: 1,
-                  blurRadius: 4,
-                  offset: const Offset(2, 2),
-                ),
-              ],
             ),
             child: Center(child: icon),
           ),
@@ -43,7 +38,7 @@ class ButtonTools extends StatelessWidget {
               label,
               overflow: TextOverflow.visible,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.black),
+              style: TextStyle(color: colors.onSurface),
             ),
           ),
         ],
