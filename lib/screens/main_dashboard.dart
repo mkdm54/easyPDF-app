@@ -45,27 +45,35 @@ class _MainDashboardState extends State<MainDashboard> {
       body: Stack(
         children: [
           _pages[_currentIndex],
-          if (isSidebarVisible)
-            GestureDetector(
+
+          // Overlay dengan animasi mulus
+          AnimatedOpacity(
+            opacity: isSidebarVisible ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 300),
+            child: GestureDetector(
               onTap: toggleSidebar,
-              child: Container(color: Colors.black.withValues(alpha: 0.5)),
+              child: Container(
+                color: Colors.black.withValues(alpha: 0.5),
+                width: double.infinity,
+                height: double.infinity,
+              ),
             ),
+          ),
+
+          // Sidebar animasi
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             left: isSidebarVisible ? 0 : -250,
             top: 0,
             bottom: 0,
-            right: 0,
-            child: Row(
-              children: [
-                CustomSidebar(
-                  currentIndex: _currentIndex,
-                  onMenuTap: onMenuTap,
-                  isDarkMode: widget.isDarkMode,
-                  onThemeToggle: widget.onThemeToggle,
-                ),
-                Expanded(child: Container()),
-              ],
+            child: SizedBox(
+              width: 250,
+              child: CustomSidebar(
+                currentIndex: _currentIndex,
+                onMenuTap: onMenuTap,
+                isDarkMode: widget.isDarkMode,
+                onThemeToggle: widget.onThemeToggle,
+              ),
             ),
           ),
         ],
