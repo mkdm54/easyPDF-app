@@ -46,7 +46,6 @@ class _MainDashboardState extends State<MainDashboard> {
         children: [
           _pages[_currentIndex],
 
-          // Overlay dengan animasi mulus
           AnimatedOpacity(
             opacity: isSidebarVisible ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 300),
@@ -63,7 +62,6 @@ class _MainDashboardState extends State<MainDashboard> {
             ),
           ),
 
-          // Sidebar animasi
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             left: isSidebarVisible ? 0 : -250,
