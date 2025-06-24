@@ -75,20 +75,11 @@ class _DashboardContentState extends State<DashboardContent> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
     return Scaffold(
       body: ContentContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Text(
-                  'Tools',
-                  style: TextStyle(fontSize: 20, color: colors.onSurface),
-                ),
-              ],
-            ),
             const SizedBox(height: 12),
             ButtonToolsCard(),
             const SizedBox(height: 12),

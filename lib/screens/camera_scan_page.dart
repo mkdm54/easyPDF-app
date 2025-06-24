@@ -448,7 +448,7 @@ class _CameraScanPageState extends State<CameraScanPage> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.8),
+                        color: Colors.green.withValues(alpha: 0.8),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(

@@ -57,23 +57,21 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
 
     listButtonTools = [
       {
-        'icon': Icon(Icons.picture_as_pdf, color: Colors.blue, size: 35),
-        'label': 'JPG to PDF',
+        'icon': Icons.picture_as_pdf,
+        'iconColor': Colors.blue,
+        'label': 'Gambar ke PDF',
         'onPressed': () => _navigateToJpgToPdfPage(),
       },
       {
-        'icon': Icon(Icons.remove_red_eye, color: Colors.red, size: 35),
-        'label': 'Open PDF',
+        'icon': Icons.remove_red_eye,
+        'iconColor': Colors.green,
+        'label': 'Buka PDF',
         'onPressed': () => _pickPdfAndOpen(),
       },
       {
-        'icon': SvgPicture.asset(
-          'assets/svg/table_merge_cells_icon.svg',
-          width: 35,
-          height: 35,
-          colorFilter: const ColorFilter.mode(Colors.purple, BlendMode.srcIn),
-        ),
-        'label': 'Merge PDF',
+        'icon': 'assets/svg/table_merge_cells_icon.svg',
+        'iconColor': Colors.purple,
+        'label': 'Gabungkan',
         'onPressed': () => _navigateToMergePdfTool(),
       },
     ];
@@ -83,9 +81,7 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final screenWidth = MediaQuery.of(context).size.width;
-    final itemWidth =
-        (screenWidth - 20) /
-        3;
+    final itemWidth = (screenWidth - 20) / 3;
 
     return Container(
       width: double.infinity,
@@ -101,12 +97,27 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
           separatorBuilder: (_, __) => const SizedBox(width: 5),
           itemBuilder: (context, index) {
             final item = listButtonTools[index];
+            final iconColor = item['iconColor'] as Color;
+
+            Widget iconWidget;
+            if (item['icon'] is IconData) {
+              iconWidget = Icon(item['icon'], color: iconColor, size: 35);
+            } else {
+              iconWidget = SvgPicture.asset(
+                item['icon'],
+                width: 35,
+                height: 35,
+                colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+              );
+            }
+
             return SizedBox(
               width: itemWidth,
               child: ButtonTools(
-                icon: item['icon'],
+                icon: iconWidget,
                 label: item['label'],
                 onpressed: item['onPressed'],
+                backgroundColor: iconColor.withValues(alpha: 0.2),
               ),
             );
           },
