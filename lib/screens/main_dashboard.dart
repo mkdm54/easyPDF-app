@@ -50,12 +50,15 @@ class _MainDashboardState extends State<MainDashboard> {
           AnimatedOpacity(
             opacity: isSidebarVisible ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 300),
-            child: GestureDetector(
-              onTap: toggleSidebar,
-              child: Container(
-                color: Colors.black.withValues(alpha: 0.5),
-                width: double.infinity,
-                height: double.infinity,
+            child: IgnorePointer(
+              ignoring: !isSidebarVisible,
+              child: GestureDetector(
+                onTap: toggleSidebar,
+                child: Container(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
               ),
             ),
           ),
