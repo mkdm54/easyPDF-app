@@ -177,7 +177,7 @@ class _ImageToPdfState extends State<ImageToPdf> {
     final colors = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("JPG to PDF Tool"),
+        title: const Text("Image to PDF Tool"),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         actions: [
@@ -210,7 +210,7 @@ class _ImageToPdfState extends State<ImageToPdf> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'JPG to PDF Converter',
+                          'Image to PDF Converter',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

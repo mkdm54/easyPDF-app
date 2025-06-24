@@ -59,19 +59,19 @@ class _ButtonToolsCardState extends State<ButtonToolsCard> {
       {
         'icon': Icons.picture_as_pdf,
         'iconColor': Colors.blue,
-        'label': 'Gambar ke PDF',
+        'label': 'Image to PDF',
         'onPressed': () => _navigateToJpgToPdfPage(),
       },
       {
         'icon': Icons.remove_red_eye,
         'iconColor': Colors.green,
-        'label': 'Buka PDF',
+        'label': 'Open PDF',
         'onPressed': () => _pickPdfAndOpen(),
       },
       {
         'icon': 'assets/svg/table_merge_cells_icon.svg',
         'iconColor': Colors.purple,
-        'label': 'Gabungkan',
+        'label': 'Merge PDF',
         'onPressed': () => _navigateToMergePdfTool(),
       },
     ];
