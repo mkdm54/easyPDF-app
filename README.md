@@ -18,15 +18,18 @@ Easy PDF adalah aplikasi ringan dan praktis untuk membantu Anda mengelola dokume
 
 ### 📌 Image to PDF
 - Konversi gambar (JPG, PNG) menjadi file PDF.
+- file pdf akan tersimpan di ```/storage/emulated/0/easy-pdf/image-pdf```
 
 ### 📌 Open PDF
 - Buka dan lihat file PDF menggunakan PDF viewer bawaan.
 
 ### 📌 Merge PDF
 - Gabungkan beberapa file PDF menjadi satu dokumen.
+- file pdf akan tersimpan di ```/storage/emulated/0/easy-pdf/merge-pdf```
 
 ### 📌 Scan to PDF
 - Scan dokumen langsung dengan kamera dan simpan sebagai PDF.
+- file pdf akan tersimpan di ```/storage/emulated/0/easy-pdf/scan-pdf```
 
 ---
 
